@@ -1,0 +1,73 @@
+
+{% include 'bundles/WebProfilerBundle/Profiler/jQuery_js.html.twig' %}
+<script>
+    profilerStack = [];
+    currentToken = '';
+    reloadWdt = function(token) {
+        var wdtUrl;
+        wdtUrl = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/_wdt/';
+        currentToken = token;
+        $('.sf-toolbar .sf-toolbarreset').html('<div class="loading-wdt"><h4>Loading... <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw margin-bottom"></i></h4></div>');
+        return $.get(wdtUrl + token, function(data) {
+            $('.sf-toolbar').empty();
+            $('.sf-toolbar').append(data);
+            $('.sf-toolbar').find(".sf-toolbarreset").append('<div class="sf-toolbar-block sf-toolbar-status-normal sf-toolbar-block-navigate-ajax"><i class="fa fa-arrow-left" aria-hidden="true"></i><i class="fa fa-arrow-right" aria-hidden="true"></i></div>');
+            if (profilerStack[profilerStack.indexOf(currentToken) - 1]) {
+                $('.sf-toolbar-block-navigate-ajax .fa-arrow-left').addClass("enabled");
+            } else {
+                $('.sf-toolbar-block-navigate-ajax .fa-arrow-left').removeClass("enabled");
+            }
+            if (profilerStack[profilerStack.indexOf(currentToken) + 1]) {
+                $('.sf-toolbar-block-navigate-ajax .fa-arrow-right').addClass("enabled");
+            } else {
+                $('.sf-toolbar-block-navigate-ajax .fa-arrow-right').removeClass("enabled");
+            }
+            return $(".sf-toolbar-block-navigate-ajax i").click(function(e) {
+                var newToken;
+                if ($(this).hasClass("fa-arrow-left") && $(this).hasClass("enabled")) {
+                    newToken = profilerStack[profilerStack.indexOf(currentToken) - 1];
+                }
+                if ($(this).hasClass("fa-arrow-right") && $(this).hasClass("enabled")) {
+                    newToken = profilerStack[profilerStack.indexOf(currentToken) + 1];
+                }
+                if (newToken) {
+                    return reloadWdt(newToken);
+                }
+            });
+        });
+    };
+    
+    function openProfiler(token,section) {
+        var url = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/_profiler/' + token +"?panel="+section;
+        $("body").append("<div class='full_screen'><button class='btn btn-success close' onclick='closeError()'>Cerrar</button><iframe src='"+url+"'/></div>");
+        $("html").addClass("full");
+    }
+    
+    function closeError() {
+        $(".full_screen").remove();
+        $("html").removeClass("full");
+    }
+
+    var oldFetch = window.fetch;
+    window.fetch = function () {
+        var promise = oldFetch.apply(this, arguments);
+        promise.then(function (r) {
+            console.log("entraa");
+            var token;
+            if (r.url.search("/_wdt/") === -1) {
+                if (token = r.headers.get('x-debug-token')) {
+                    profilerStack.push(token);
+                    reloadWdt(token);
+                    console.log(r);
+                    if(r.status==500){
+                        openProfiler(token,"exception");
+                    }
+                }
+            }
+
+        }, function (e){
+            console.log(e);
+        });
+        return promise;
+    }
+</script>

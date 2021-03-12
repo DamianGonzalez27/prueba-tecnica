@@ -1,0 +1,6 @@
+POST {{host}}:{{port}}/api/login_check
+Content-Type: application/x-www-form-urlencoded
+
+_username={{username}}&_password={{password}}
+> {% client.global.set('token', response.body.token);%}
+###

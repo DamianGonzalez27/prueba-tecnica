@@ -1,0 +1,28 @@
+.idea
+###> symfony/framework-bundle ###
+uploads
+.env
+/.env.local
+/.env.local.php
+/.env.*.local
+/public/bundles/
+/.vscode/
+/var/
+/vendor/
+/node_modules/
+/front/
+package.json
+###< symfony/framework-bundle ###
+
+###> symfony/phpunit-bridge ###
+.phpunit
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###

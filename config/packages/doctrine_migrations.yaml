@@ -1,0 +1,13 @@
+doctrine_migrations:
+    migrations_paths:
+        'DoctrineMigrations': '%kernel.project_dir%/src/Migrations'
+    #dir_name: '%kernel.project_dir%/src/Migrations'
+    # namespace is arbitrary but should be different from App\Migrations
+    # as migrations classes should NOT be autoloaded
+    #namespace: DoctrineMigrations
+    storage:
+        # Default (SQL table) metadata storage configuration
+        table_storage:
+            table_name: 'migration_versions'
+    # Run all migrations in a transaction.
+    all_or_nothing: false

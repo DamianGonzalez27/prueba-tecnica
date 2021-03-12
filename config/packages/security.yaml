@@ -1,0 +1,16 @@
+security:
+    encoders:
+        App\Entity\User:
+            algorithm: bcrypt
+    providers:
+        db_provider:
+            entity:
+                class: App\Entity\User
+                property: username
+    role_hierarchy:
+        SUPER_ADMIN:
+        - ROLE_ALLOWED_TO_SWITCH
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false

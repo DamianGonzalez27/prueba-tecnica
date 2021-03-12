@@ -1,0 +1,41 @@
+api_platform:
+    title: 'API'
+    version: '1.0.0'
+    mapping:
+        paths: ['%kernel.project_dir%/src/Entity']
+    formats:
+        json:                          ['application/json']
+        jsonld:                        ['application/ld+json']
+        jsonhal:                       ['application/hal+json']
+        jsonapi:                       ['application/vnd.api+json']
+        xml:                           ['application/xml', 'text/xml']
+        html:                          ['text/html']
+        xlsx:                          ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+
+            # jsonapi:
+          #    mime_types: ['application/vnd.api+json']
+          #        json:
+          #            mime_types: ['application/json']
+          #html:
+          #   mime_types: ['text/html']
+        #jsonld:
+        #mime_types: ['application/ld+json']
+    enable_swagger: true
+    enable_swagger_ui: true
+    graphql:
+        enabled: false
+        graphiql:
+            enabled: false
+    allow_plain_identifiers: true
+    collection:
+        pagination:
+            client_enabled: true
+            enabled_parameter_name: pagination
+            client_items_per_page: true # Disabled by default
+            items_per_page_parameter_name: itemsPerPage
+            maximum_items_per_page: 150
+    exception_to_status:
+        # The 2 following handlers are registered by default, keep those lines to prevent unexpected side effects
+        Symfony\Component\Serializer\Exception\ExceptionInterface: 400 # Use a raw status code (recommended)
+        ApiPlatform\Core\Exception\InvalidArgumentException: !php/const Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST # Or a `Symfony\Component\HttpFoundation\Response`'s constant
+        ApiPlatform\Core\Validator\Exception\ValidationException: 400
